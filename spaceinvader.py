@@ -21,15 +21,21 @@ BLUE_LAZER = pygame.image.load(os.path.join("assets", "pixel_laser_blue.png"))
 RED_LAZER = pygame.image.load(os.path.join("assets", "pixel_laser_yellow.png"))
 
 #imports for the background image
-BACKGROUND = pygame.image.load(os.path.join("assets", "background-black.png"))
+BACKGROUND = pygame.transform.scale(pygame.image.load(os.path.join("assets", "background-black.png")), (WIDTH, HEIGHT))
 
 def main():
     run = True
     FPS = 60
+    level = 1
+    lives = 5
     clock = pygame.time.Clock()
+
+    def redrawWindow():
+        WINDOW.blit(BACKGROUND, (0,0))
+        pygame.display.update()
     while run:
         clock.tick(FPS)
-
+        redrawWindow()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
