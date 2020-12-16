@@ -53,7 +53,7 @@ class Player(Ship):
         self.mask = pygame.mask.from_surface(self.shipImage)
         self.maxHealth = health
 
-class enemyShip(Ship):
+class Enemy(Ship):
     COLOUR_MAP = {
         "red" : (RED_SPACE_SHIP, RED_LAZER),
         "blue" : (BLUE_SPACE_SHIP, BLUE_LAZER),
@@ -66,14 +66,20 @@ class enemyShip(Ship):
 
     def move(self, vel) :
         self.y += vel
+
 def main():
     run = True
     FPS = 60
-    level = 1
+    level = 0
     lives = 5
     playerVelocity = 5
     mainFont = pygame.font.SysFont("comicsans", 50)
     clock = pygame.time.Clock()
+
+    enemies = []
+    waveLength = 5
+    enemyVelocity = 1
+
 
     player = Player(300, 650)
 
@@ -85,11 +91,21 @@ def main():
         WINDOW.blit(livesLabel, (10, 10))
         WINDOW.blit(levelLabel, (WIDTH - levelLabel.get_width() - 10, 10))
 
+        for enemy in enemies:
+            enemy.draw(WINDOW)
+
         player.draw(WINDOW)
+
         pygame.display.update()
     while run:
         clock.tick(FPS)
-        redrawWindow()
+
+        if len(enemies) == 0:
+            level += 1
+            waveLength += 5
+            for i in range(waveLength):
+                enemy = Enemy(random.randrange(100, WIDTH - 100), random.randrange(-1500, -100), random.choice(["red", "blue", "green"]))
+                enemies.append(enemy)
         #check for closed window
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -105,4 +121,11 @@ def main():
             player.y += playerVelocity
         if keys[pygame.K_w] and player.y - playerVelocity > 0:  #Up
             player.y -= playerVelocity
+
+        for enemy in enemies[:]:
+            enemy.move(enemyVelocity)
+            if enemy.y + enemy.get_height() > HEIGHT:
+                lives -= 1
+                enemies.remove(enemy)
+        redrawWindow()
 main()
