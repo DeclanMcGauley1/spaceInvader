@@ -2,6 +2,7 @@ import pygame
 import os
 import time
 import random
+pygame.font.init()
 
 WIDTH = 750
 HEIGHT = 750
@@ -28,10 +29,16 @@ def main():
     FPS = 60
     level = 1
     lives = 5
+    mainFont = pygame.font.SysFont("comicsans", 50)
     clock = pygame.time.Clock()
 
     def redrawWindow():
         WINDOW.blit(BACKGROUND, (0,0))
+        #draw lives and level labels to the screen
+        livesLabel = mainFont.render(f"lives: {lives}", 1, (255, 255, 255))
+        levelLabel = mainFont.render(f"level: {level}", 1, (255, 255, 255))
+        WINDOW.blit(livesLabel, (10, 10))
+        WINDOW.blit(levelLabel, (WIDTH - levelLabel.get_width() - 10, 10))
         pygame.display.update()
     while run:
         clock.tick(FPS)
