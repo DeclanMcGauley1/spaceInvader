@@ -74,7 +74,9 @@ def main():
     lives = 5
     playerVelocity = 5
     mainFont = pygame.font.SysFont("comicsans", 50)
+    lostFont = pygame.font.SysFont("comicsans", 60)
     clock = pygame.time.Clock()
+    lost = False
 
     enemies = []
     waveLength = 5
@@ -96,9 +98,17 @@ def main():
 
         player.draw(WINDOW)
 
+        if lost:
+            lostLabel = lostFont.render("You lost!", 1, (255,255,255))
+            WINDOW.blit(lostLabel, (WIDTH / 2 - levelLabel.get_width() / 2, 350))
+
         pygame.display.update()
     while run:
         clock.tick(FPS)
+
+        if lives <= 0 or player.health <= 0:
+            lost = True
+
 
         if len(enemies) == 0:
             level += 1
