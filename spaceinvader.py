@@ -206,6 +206,10 @@ def main():
         for enemy in enemies[:]:
             enemy.move(enemyVelocity)
             enemy.moveLasers(laserVelocity, player)
+
+            if random.randrange(0, 2*60) == 1:
+                enemy.shoot()
+
             if enemy.y + enemy.get_height() > HEIGHT:
                 lives -= 1
                 enemies.remove(enemy)
