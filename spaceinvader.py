@@ -77,6 +77,7 @@ def main():
     lostFont = pygame.font.SysFont("comicsans", 60)
     clock = pygame.time.Clock()
     lost = False
+    lostCount = 0
 
     enemies = []
     waveLength = 5
@@ -105,9 +106,16 @@ def main():
         pygame.display.update()
     while run:
         clock.tick(FPS)
-
+        redrawWindow()
         if lives <= 0 or player.health <= 0:
             lost = True
+            lostCount += 1
+
+        if lost:
+            if lostCount > FPS * 3:
+                run = False
+            else:
+                continue
 
 
         if len(enemies) == 0:
@@ -137,5 +145,5 @@ def main():
             if enemy.y + enemy.get_height() > HEIGHT:
                 lives -= 1
                 enemies.remove(enemy)
-        redrawWindow()
+
 main()
