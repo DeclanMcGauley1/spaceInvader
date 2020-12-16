@@ -24,6 +24,7 @@ RED_LAZER = pygame.image.load(os.path.join("assets", "pixel_laser_yellow.png"))
 #imports for the background image
 BACKGROUND = pygame.transform.scale(pygame.image.load(os.path.join("assets", "background-black.png")), (WIDTH, HEIGHT))
 
+#class for a ship object
 class Ship:
     def __init__(self, x, y, health = 100):
         self.x = x
@@ -34,6 +35,7 @@ class Ship:
         self.lasers = []
         self.coolDownCounter = 0
 
+    #Draws the ship to the screen
     def draw(self, window):
         pygame.draw.rect(window, (255, 0, 0), (self.x, self.y, 50, 50))
 
@@ -62,17 +64,19 @@ def main():
     while run:
         clock.tick(FPS)
         redrawWindow()
+        #check for closed window
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
 
+        #Player movement control
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_a]: #left
+        if keys[pygame.K_a] and ship.x - playerVelocity > 0: #left
             ship.x -= playerVelocity
-        if keys[pygame.K_d]: #Right
+        if keys[pygame.K_d] and ship.x + playerVelocity + 50 < WIDTH: #Right
             ship.x += playerVelocity
-        if keys[pygame.K_s]: #Down
+        if keys[pygame.K_s] and ship.y + playerVelocity + 50 < HEIGHT: #Down
             ship.y += playerVelocity
-        if keys[pygame.K_w]:  #Up
+        if keys[pygame.K_w] and ship.y - playerVelocity > 0:  #Up
             ship.y -= playerVelocity
 main()
