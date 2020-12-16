@@ -207,7 +207,7 @@ def main():
             enemy.move(enemyVelocity)
             enemy.moveLasers(laserVelocity, player)
 
-            if random.randrange(0, 2*60) == 1:
+            if random.randrange(0, 4*60) == 1:
                 enemy.shoot()
 
             if enemy.y + enemy.get_height() > HEIGHT:
