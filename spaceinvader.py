@@ -19,7 +19,7 @@ YELLOW_SPACE_SHIP = pygame.image.load(os.path.join("assets", "pixel_ship_yellow.
 RED_LAZER = pygame.image.load(os.path.join("assets", "pixel_laser_red.png"))
 GREEN_LAZER = pygame.image.load(os.path.join("assets", "pixel_laser_green.png"))
 BLUE_LAZER = pygame.image.load(os.path.join("assets", "pixel_laser_blue.png"))
-RED_LAZER = pygame.image.load(os.path.join("assets", "pixel_laser_yellow.png"))
+YELLOW_LAZER = pygame.image.load(os.path.join("assets", "pixel_laser_yellow.png"))
 
 #imports for the background image
 BACKGROUND = pygame.transform.scale(pygame.image.load(os.path.join("assets", "background-black.png")), (WIDTH, HEIGHT))
@@ -37,9 +37,35 @@ class Ship:
 
     #Draws the ship to the screen
     def draw(self, window):
-        pygame.draw.rect(window, (255, 0, 0), (self.x, self.y, 50, 50))
+        window.blit(self.shipImage, (self.x, self.y))
 
+    def get_width(self):
+        return self.shipImage.get_width()
 
+    def get_height(self):
+        return self.shipImage.get_height()
+
+class Player(Ship):
+    def __init__(self, x, y, health = 100):
+        super().__init__(x, y, health)
+        self.shipImage = YELLOW_SPACE_SHIP
+        self.laserImage = YELLOW_LAZER
+        self.mask = pygame.mask.from_surface(self.shipImage)
+        self.maxHealth = health
+
+class enemyShip(Ship):
+    COLOUR_MAP = {
+        "red" : (RED_SPACE_SHIP, RED_LAZER),
+        "blue" : (BLUE_SPACE_SHIP, BLUE_LAZER),
+        "green" : (GREEN_SPACE_SHIP, GREEN_LAZER)
+    }
+    def __init__(self, x, y, colour, health = 100):
+        super().__init__(x, y, health)
+        self.shipImage, self.laserImage = self.COLOUR_MAP[colour]
+        self.mask = pygame.mask.from_surface(self.shipImage)
+
+    def move(self, vel) :
+        self.y += vel
 def main():
     run = True
     FPS = 60
@@ -49,7 +75,7 @@ def main():
     mainFont = pygame.font.SysFont("comicsans", 50)
     clock = pygame.time.Clock()
 
-    ship = Ship(300, 650)
+    player = Player(300, 650)
 
     def redrawWindow():
         WINDOW.blit(BACKGROUND, (0,0))
@@ -59,7 +85,7 @@ def main():
         WINDOW.blit(livesLabel, (10, 10))
         WINDOW.blit(levelLabel, (WIDTH - levelLabel.get_width() - 10, 10))
 
-        ship.draw(WINDOW)
+        player.draw(WINDOW)
         pygame.display.update()
     while run:
         clock.tick(FPS)
@@ -71,12 +97,12 @@ def main():
 
         #Player movement control
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_a] and ship.x - playerVelocity > 0: #left
-            ship.x -= playerVelocity
-        if keys[pygame.K_d] and ship.x + playerVelocity + 50 < WIDTH: #Right
-            ship.x += playerVelocity
-        if keys[pygame.K_s] and ship.y + playerVelocity + 50 < HEIGHT: #Down
-            ship.y += playerVelocity
-        if keys[pygame.K_w] and ship.y - playerVelocity > 0:  #Up
-            ship.y -= playerVelocity
+        if keys[pygame.K_a] and player.x - playerVelocity > 0: #left
+            player.x -= playerVelocity
+        if keys[pygame.K_d] and player.x + playerVelocity + player.get_width() < WIDTH: #Right
+            player.x += playerVelocity
+        if keys[pygame.K_s] and player.y + playerVelocity + player.get_height() < HEIGHT: #Down
+            player.y += playerVelocity
+        if keys[pygame.K_w] and player.y - playerVelocity > 0:  #Up
+            player.y -= playerVelocity
 main()
