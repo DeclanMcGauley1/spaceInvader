@@ -24,13 +24,30 @@ RED_LAZER = pygame.image.load(os.path.join("assets", "pixel_laser_yellow.png"))
 #imports for the background image
 BACKGROUND = pygame.transform.scale(pygame.image.load(os.path.join("assets", "background-black.png")), (WIDTH, HEIGHT))
 
+class Ship:
+    def __init__(self, x, y, health = 100):
+        self.x = x
+        self.y = y
+        self.health = health
+        self.shipImage = None
+        self.laserImage = None
+        self.lasers = []
+        self.coolDownCounter = 0
+
+    def draw(self, window):
+        pygame.draw.rect(window, (255, 0, 0), (self.x, self.y, 50, 50))
+
+
 def main():
     run = True
     FPS = 60
     level = 1
     lives = 5
+    playerVelocity = 5
     mainFont = pygame.font.SysFont("comicsans", 50)
     clock = pygame.time.Clock()
+
+    ship = Ship(300, 650)
 
     def redrawWindow():
         WINDOW.blit(BACKGROUND, (0,0))
@@ -39,6 +56,8 @@ def main():
         levelLabel = mainFont.render(f"level: {level}", 1, (255, 255, 255))
         WINDOW.blit(livesLabel, (10, 10))
         WINDOW.blit(levelLabel, (WIDTH - levelLabel.get_width() - 10, 10))
+
+        ship.draw(WINDOW)
         pygame.display.update()
     while run:
         clock.tick(FPS)
@@ -47,4 +66,13 @@ def main():
             if event.type == pygame.QUIT:
                 run = False
 
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_a]: #left
+            ship.x -= playerVelocity
+        if keys[pygame.K_d]: #Right
+            ship.x += playerVelocity
+        if keys[pygame.K_s]: #Down
+            ship.y += playerVelocity
+        if keys[pygame.K_w]:  #Up
+            ship.y -= playerVelocity
 main()
