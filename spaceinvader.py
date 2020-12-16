@@ -14,3 +14,6 @@ RED_LAZER = pygame.image.load(os.path.join("assets", "pixel_laser_red.png"))
 GREEN_LAZER = pygame.image.load(os.path.join("assets", "pixel_laser_green.png"))
 BLUE_LAZER = pygame.image.load(os.path.join("assets", "pixel_laser_blue.png"))
 RED_LAZER = pygame.image.load(os.path.join("assets", "pixel_laser_yellow.png"))
+
+#imports for the background image
+BACKGROUND = pygame.image.load(os.path.join("assets", "background-black.png"))
