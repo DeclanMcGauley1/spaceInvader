@@ -213,7 +213,7 @@ def main():
             player.x -= playerVelocity
         if keys[pygame.K_d] and player.x + playerVelocity + player.get_width() < WIDTH: #Right
             player.x += playerVelocity
-        if keys[pygame.K_s] and player.y + playerVelocity + player.get_height() + 10 < HEIGHT: #Down
+        if keys[pygame.K_s] and player.y + playerVelocity + player.get_height() + 15 < HEIGHT: #Down
             player.y += playerVelocity
         if keys[pygame.K_w] and player.y - playerVelocity > 0:  #Up
             player.y -= playerVelocity
