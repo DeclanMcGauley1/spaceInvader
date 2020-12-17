@@ -71,6 +71,7 @@ class Ship:
             self.lasers.append(laser)
             self.coolDownCounter = 1
 
+#player class that inherites the Ship class
 class Player(Ship):
     def __init__(self, x, y, health = 100):
         super().__init__(x, y, health)
@@ -79,6 +80,7 @@ class Player(Ship):
         self.mask = pygame.mask.from_surface(self.shipImage)
         self.maxHealth = health
 
+    #moves the laser shot by the player, removes the enemy from the screen if a collision is detected
     def moveLasers(self, vel, objs):
         self.cooldown()
         for laser in self.lasers:
@@ -91,25 +93,31 @@ class Player(Ship):
                         objs.remove(obj)
                         self.lasers.remove(laser)
 
+    #draws the player and the healthbar to the screen
     def draw(self, window):
         super().draw(window)
         self.healthbar(window)
 
+    #red and green healthbar, green shrinks based on the percentage health that the player has
     def healthbar(self, window):
         pygame.draw.rect(window, (255, 0, 0), (self.x, self.y + self.shipImage.get_height() + 10, self.shipImage.get_width(), 10))
         pygame.draw.rect(window, (0, 255, 0), (self.x, self.y + self.shipImage.get_height() + 10, self.shipImage.get_width() * (self.health / self.maxHealth), 10))
 
+#Enemy class that inherites the Ship class
 class Enemy(Ship):
+    #dictionary that returns the correct images based on the ships colour
     COLOUR_MAP = {
         "red" : (RED_SPACE_SHIP, RED_LAZER),
         "blue" : (BLUE_SPACE_SHIP, BLUE_LAZER),
         "green" : (GREEN_SPACE_SHIP, GREEN_LAZER)
     }
+
     def __init__(self, x, y, colour, health = 100):
         super().__init__(x, y, health)
         self.shipImage, self.laserImage = self.COLOUR_MAP[colour]
         self.mask = pygame.mask.from_surface(self.shipImage)
 
+    #moves the enemy ships down the screen
     def move(self, vel) :
         self.y += vel
 
@@ -119,6 +127,7 @@ class Enemy(Ship):
             self.lasers.append(laser)
             self.coolDownCounter = 1
 
+#class that represents the lasers that the ship will be firing
 class Laser:
     def __init__(self, x, y, img):
         self.x = x
@@ -126,12 +135,15 @@ class Laser:
         self.img = img
         self.mask = pygame.mask.from_surface(self.img)
 
+    #draws the lasers to the screen when the ships fire a laser
     def draw(self, window):
         window.blit(self.img, (self.x, self.y))
 
+    #moves the laser down the screen
     def move(self, vel):
         self.y += vel
 
+    #returns true if there is a laser off the screen
     def offScreen(self, height):
         return not (self.y <= height and self.y >= 0)
 
