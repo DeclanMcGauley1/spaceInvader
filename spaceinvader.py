@@ -64,6 +64,7 @@ class Ship:
             self.coolDownCounter = 0
         if self.coolDownCounter > 0:
             self.coolDownCounter += 1
+
     def shoot(self):
         if self.coolDownCounter == 0:
             laser = Laser(self.x, self.y, self.laserImage)
@@ -77,6 +78,7 @@ class Player(Ship):
         self.laserImage = YELLOW_LAZER
         self.mask = pygame.mask.from_surface(self.shipImage)
         self.maxHealth = health
+
     def moveLasers(self, vel, objs):
         self.cooldown()
         for laser in self.lasers:
@@ -88,6 +90,15 @@ class Player(Ship):
                     if laser.collision(obj):
                         objs.remove(obj)
                         self.lasers.remove(laser)
+
+    def draw(self, window):
+        super().draw(window)
+        self.healthbar(window)
+
+    def healthbar(self, window):
+        pygame.draw.rect(window, (255, 0, 0), (self.x, self.y + self.shipImage.get_height() + 10, self.shipImage.get_width(), 10))
+        pygame.draw.rect(window, (0, 255, 0), (self.x, self.y + self.shipImage.get_height() + 10, self.shipImage.get_width() * (self.health / self.maxHealth), 10))
+
 class Enemy(Ship):
     COLOUR_MAP = {
         "red" : (RED_SPACE_SHIP, RED_LAZER),
@@ -101,6 +112,12 @@ class Enemy(Ship):
 
     def move(self, vel) :
         self.y += vel
+
+    def shoot(self):
+        if self.coolDownCounter == 0:
+            laser = Laser(self.x - 15, self.y, self.laserImage)
+            self.lasers.append(laser)
+            self.coolDownCounter = 1
 
 class Laser:
     def __init__(self, x, y, img):
@@ -143,8 +160,7 @@ def main():
     enemyVelocity = 1
     laserVelocity = 4
 
-
-    player = Player(300, 650)
+    player = Player(300, 630)
 
     def redrawWindow():
         WINDOW.blit(BACKGROUND, (0,0))
@@ -185,6 +201,7 @@ def main():
             for i in range(waveLength):
                 enemy = Enemy(random.randrange(100, WIDTH - 100), random.randrange(-1500, -100), random.choice(["red", "blue", "green"]))
                 enemies.append(enemy)
+
         #check for closed window
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -196,7 +213,7 @@ def main():
             player.x -= playerVelocity
         if keys[pygame.K_d] and player.x + playerVelocity + player.get_width() < WIDTH: #Right
             player.x += playerVelocity
-        if keys[pygame.K_s] and player.y + playerVelocity + player.get_height() < HEIGHT: #Down
+        if keys[pygame.K_s] and player.y + playerVelocity + player.get_height() + 10 < HEIGHT: #Down
             player.y += playerVelocity
         if keys[pygame.K_w] and player.y - playerVelocity > 0:  #Up
             player.y -= playerVelocity
@@ -210,7 +227,10 @@ def main():
             if random.randrange(0, 4*60) == 1:
                 enemy.shoot()
 
-            if enemy.y + enemy.get_height() > HEIGHT:
+            if collide(enemy, player):
+                player.health -= 10
+                enemies.remove(enemy)
+            elif enemy.y + enemy.get_height() > HEIGHT:
                 lives -= 1
                 enemies.remove(enemy)
 
